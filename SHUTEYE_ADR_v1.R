@@ -15,6 +15,21 @@ library(dplyr)
 
 setwd("C:/temp/SHUTEYE_working")
 
+##############################################################################################
+
+## PLOTS OF TREATMENT EFFECT SCENARIOS
+
+## read in data from Excel file
+
+scenarios <- read.csv("c:/temp/SHUTEYE_working/treatment_scenarios.csv")
+
+ggplot(data=scenarios, aes(x=arm, y=response, colour=key)) +
+  geom_line(show.legend = FALSE) +
+  geom_point(show.legend = FALSE) +
+  facet_wrap(~ key) +
+  labs(x = "Duration (days)") +
+  ylim(0.4, 1)
+
 #####################################################################################################
 
 ## evaluation of maximum overall sample size

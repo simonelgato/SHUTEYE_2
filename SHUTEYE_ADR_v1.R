@@ -38,7 +38,7 @@ ggplot(data=scenarios, aes(x=arm, y=response, colour=key)) +
 ## read in data - aggregated (pivoted) simulation data from
 ## SHUTEYE_resub_ss.facts
 
-sims <- read.csv("C:/temp/SHUTEYE_working/agg_data_sample_size.csv", 
+sims <- read.csv("C:/temp/SHUTEYE_working/agg_data_ss_simulations.csv", 
              skip = 2)
 
 ## create edq95 variable and fill with appropriate values
@@ -183,172 +183,53 @@ ggplot(scen7, aes(x = Pr.Max.)) +
   ggtitle("Peak scenario: 6 days best")
 
 ####################################################################################################
+
+## summary tables to complement plots
+
+library(formattable)
+
+sumdat <- read.csv("c:/temp/SHUTEYE_working/agg_data_ss_summary.csv", skip = 2) %>%
+rename(scenario = Response.Profile, n_per_arm = Mean.Alloc.1)
+
+st1 <- sumdat %>%
+  select(scenario, n_per_arm, Ppn.Pr.Max..1, Ppn.Pr.Max..2, Ppn.Pr.Max..3, Ppn.Pr.Max..4, Ppn.Pr.Max..5) %>%
+  rename(four_day = Ppn.Pr.Max..1, five_day = Ppn.Pr.Max..2, six_day = Ppn.Pr.Max..3, 
+         seven_day = Ppn.Pr.Max..4, eight_day = Ppn.Pr.Max..5)
+st1$stat = "PpnMax"
+
+st2 <- sumdat %>%
+  select(scenario, n_per_arm, Ppn.Pr.EDq..1, Ppn.Pr.EDq..2, Ppn.Pr.EDq..3, Ppn.Pr.EDq..4, Ppn.Pr.EDq..5) %>%
+  rename(four_day = Ppn.Pr.EDq..1, five_day = Ppn.Pr.EDq..2, six_day = Ppn.Pr.EDq..3, 
+         seven_day = Ppn.Pr.EDq..4, eight_day = Ppn.Pr.EDq..5)
+st2$stat = "PpnEDq95"
+
+st3 <- sumdat %>%
+  select(scenario, n_per_arm, Ppn.QOI_4_1.1, Ppn.QOI_4_1.2, Ppn.QOI_4_1.3, Ppn.QOI_4_1.4, Ppn.QOI_4_1.5) %>%
+  rename(four_day = Ppn.QOI_4_1.1, five_day = Ppn.QOI_4_1.2, six_day = Ppn.QOI_4_1.3, 
+         seven_day = Ppn.QOI_4_1.4, eight_day = Ppn.QOI_4_1.5)
+st3$stat = "PpnEDq90"
+
+st4 <- sumdat %>%
+  select(scenario, n_per_arm, Pr.EDq._at_4d, Pr.EDq._at_5d, Pr.EDq._at_6d, Pr.EDq._at_7d, Pr.EDq._at_8d) %>%
+  rename(four_day = Pr.EDq._at_4d, five_day = Pr.EDq._at_5d, six_day = Pr.EDq._at_6d, 
+         seven_day = Pr.EDq._at_7d, eight_day = Pr.EDq._at_8d)
+st4$stat = "MeanPrEDq95"
+st4r <- st4 %>%
+  mutate_if(is.numeric, round, 3)
+
+## NEED TO ROUND ALL THE NUMBERS IN ST4 BECAUSE THEY HAVE LOTS OF DECIMAL PLACES
+## export numbers to csv files for the 4 tables
+
+write.csv(st1, "tabmax.csv", row.names = F)
+
+write.csv(st2, "tabedq95.csv", row.names = F)
+
+write.csv(st3, "tabedq90.csv", row.names = F)
+
+write.csv(st4r, "tabmeanedq.csv", row.names = F)
+
+## ENDS
+
+####################################################################################################
 ####################################################################################################
 
-## histogram of 5% difference 
-
-ggplot(simulations.df, aes(x=simulations.df$Pr.CSD.2)) +
-  facet_wrap(~labels, ncol=2) +
-  geom_histogram(fill = "brown", alpha=0.4, binwidth=0.025) +
-  theme_minimal() +
-  labs(x="probability of >5% benefit", subtitle = "red line = probability of 0.9") +
-  geom_vline(xintercept=0.9, color="red") +
-  ggtitle("Probability of benefit > 5%") +
-
-
-#################################################################################################
-
-## histograms of final odds ratio
-
-ggplot(simulations.df, aes(x=simulations.df$fOR)) +
-  facet_wrap(~labels, ncol=2) +
-  geom_histogram(fill = "darkred", alpha=0.4, binwidth=0.025) +
-  theme_minimal() +
-  labs(x="odds ratio", subtitle = "red line = odds ratio of 1") +
-  geom_vline(xintercept=1, color="red") +
-  ggtitle("Final odds ratios") +
-  xlim(0, 2.5)
-
-
-
-## histogram of number of trials with each type of outcome
-## in each scenario
-
-subA <- subset(simulations.df, simulations.df$Outcome == 4)
-
-ggplot(data=subA, aes(x=subA$Response.Profile)) + 
-  geom_bar(stat = "count", fill = "light blue", width=0.5) + 
-  theme_minimal() +
-  ggtitle("Stopped early for lack of effectiveness 5000 simulations") +
-  labs(x="Scenario") +
-  ylim(0, 5000)
-
-subB <- subset(simulations.df, simulations.df$Outcome == 1)
-
-ggplot(data=subB, aes(x=subB$Response.Profile)) + 
-  geom_bar(stat = "count", fill = "light blue", width=0.5) + 
-  theme_minimal() +
-  ggtitle("Stopped early for success 5000 simulations") +
-  labs(x="Scenario") +
-  ylim(0,5000)
-
-###############################################################
-
-## plot of power
-## power being proportion of trials that have a "positive" outcome
-## or stop early for success
-
-px <- as.data.frame(table(simulations.df$Response.Profile, simulations.df$Success.Pr.PBO__at_abx))
-px2 <- px[c(14, 15, 16, 17, 18, 19), ]
-px2$power <- px2$Freq/5000
-
-ggplot(px2, aes(x = Var1, y = power, group = 1)) +
-  geom_point(size=2) +
-  labs(x = "scenario", y="prob positive") +
-  geom_line()
-
-###############################################################
-
-## need to sort out criterion for "success" and add up number satisfying that
-## don't think this is quite right yet
-## also plots of mean sample size and error bars
-
-###############################################################
-
-subpat <- subset(patients.df, patients.df$Scenario.ID == 1)
-table(subpat$Visit.1)
-table(subpat$Visit.2)
-table(subpat$Visit.3)
-table(subpat$Visit.4)
-table(subpat$Visit.5)
-table(subpat$Visit.6)
-
-###############################################################
-## this is just some code for helping with plotting
-## from EOLIA profram which is why it isn't relevant here
-
-ggplot(data=xy, aes(x=Var1, y=Freq)) + 
-  geom_bar(stat="identity", aes(fill=Reason), width=0.8, position=position_dodge(0.5)) + 
-  theme_minimal() +
-  ggtitle("Control 60%, ECMO 40%") +
-  labs(x="interim at which trial stopped") +
-  scale_fill_brewer(palette="Paired") +
-  scale_x_discrete(labels=c("Interim 1", "Interim 2", "Interim 3", "Interim 4", 
-                            "Interim 5", "6" = "Final analysis"))
-
-# histogram of odds ratio
-ggplot(stoptrial, aes(x=stoptrial$OR)) + geom_histogram(fill = "blue", alpha=0.4, binwidth=0.05) +
-  theme_minimal() +
-  labs(x="odds ratio") +
-  geom_vline(xintercept=1.0, color="red") +
-  ggtitle("Control 60%, ECMO 40%") +
-  
-  
-  # tables
-  table(stoptrial$stoptype)
-table(stoptrial$stop)
-
-# subset data to get sims stopped at each interim
-# and plot OR
-
-sub1 <- subset(stoptrial, stoptrial$InterimNumber == 1)
-ggplot(sub1, aes(x=sub1$OR)) + geom_histogram(fill = "blue", alpha=0.4, binwidth=0.05) +
-  theme_minimal() +
-  labs(x="odds ratio") +
-  geom_vline(xintercept=2.25, color="red") +
-  ggtitle("Stopped at interim 1")
-
-ggplot(subsim, aes(x = V_val, y = Z_val)) +
-  xlim(0, 25) + ylim(-10, 25) +
-  geom_point(size=2) +
-  geom_abline(intercept = -5.54, slope = 0.81, colour="red") +
-  geom_abline(intercept = 5.54, slope = 0.27, colour="red") +
-  geom_line(data = subsim[subsim$Sim == 1, ]) +
-  geom_line(data = subsim[subsim$Sim == 2, ]) +
-  geom_line(data = subsim[subsim$Sim == 3, ]) +
-  geom_line(data = subsim[subsim$Sim == 4, ]) +
-  geom_line(data = subsim[subsim$Sim == 5, ])
-
-## plot selected simulations in f8
-
-plotline1 <- data.frame(x1 = 0, x2 = 20.5185, y1 = 5.54, y2 = 11.08)
-plotline2 <- data.frame(x1 = 0, x2 = 20.5185, y1 = -5.54, y2 = 11.08)
-
-f9 <- subset(f8, f8$InterimNumber == f8$stopat)
-
-ggplot(f8, aes(x = V_val, y = Z_val)) +
-  xlim(0, 25) + ylim(-10, 15) +
-  geom_point(size=2) +
-  geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour="red"), data = plotline1) +
-  geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour="red"), data = plotline2) +
-  geom_line(data = f8[f8$Sim == 48, ]) +
-  geom_line(data = f8[f8$Sim == 49, ]) +
-  geom_line(data = f8[f8$Sim == 50, ]) +
-  geom_line(data = f8[f8$Sim == 51, ]) +
-  geom_point(aes(x=fV_val, y=fZ_val, colour="red"), data=f9)
-
-
-## this is trying to do a facet plot which would be easier
-
-subX <- subset(simulations.df, simulations.df$Scenario.ID == c(1, 2, 3, 4))
-
-ggplot(subX, aes(x=subX$Subjects)) +
-  facet_grid(rows = vars(subX$Response.Profile)) +
-  geom_histogram(fill = "blue", alpha=0.4, binwidth=20) +
-  theme_minimal() +
-  labs(x="sample size") +
-  ggtitle("Overall sample size")
-ylim(0, 4000) 
-
-
-## just messing around with this - seems to work now
-
-ggplot(simulations.df, aes(x=simulations.df$Subjects)) +
-  facet_wrap(~simulations.df$Response.Profile, ncol=2) +
-  geom_histogram(fill = "blue", alpha=0.4, binwidth=20) +
-  theme_minimal() +
-  labs(x="sample size") +
-  ggtitle("Overall sample size") +
-  ylim(0, 4000) +
-  xlim(400, 1600) +
-  scale_x_continuous(breaks=c(500, 1000, 1500))

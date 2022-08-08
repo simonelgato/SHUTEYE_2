@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<facts version="6.4.0.24849" guid="08124107-1538-4d48-8f0a-88dc198ab5c8" name="SHUTEYE_resub_ss" host="TRAIGHMHOR">
+<facts version="6.4.0.24849" guid="481bc026-69cb-43bf-9fad-0125830e8cab" name="SHUTEYE_resub_adapt_Aug_2022" host="TRAIGHMHOR">
   <project-notes><![CDATA[]]></project-notes>
   <parameterSets type="NucleusParameterSet">
     <parameterSet name="nucleus" SetId="65f47997-7063-4338-a129-832027738c0b">
@@ -120,6 +120,13 @@
               <is_default_qoi>False</is_default_qoi>
               <qoi_id>83e3c6e4-ab45-4eaf-a9be-0bd472fd5b54</qoi_id>
             </decision_qois>
+            <decision_qois>
+              <ref_qoi_id>5447fb4a-fb55-409c-a615-a2b7dcae8122</ref_qoi_id>
+              <target_dose_qoi>ActualDose---Max probability over all doses</target_dose_qoi>
+              <alt_name>Pr(Max)_at_Max_probability_over_all_doses</alt_name>
+              <is_default_qoi>False</is_default_qoi>
+              <qoi_id>be799225-1f4a-4b34-95ef-a0eb949ce04e</qoi_id>
+            </decision_qois>
           </decisions_qoi>
         </qoi_types>
       </property>
@@ -127,10 +134,16 @@
         <adapt_alloc_targets />
       </property>
       <property name="arm_dropping_criteria">
-        <arm_dropping_criteria />
+        <arm_dropping_criteria>
+          <arm_dropping_criterion>
+            <qoi_id>5447fb4a-fb55-409c-a615-a2b7dcae8122</qoi_id>
+            <condition>4</condition>
+            <threshold>0.025</threshold>
+          </arm_dropping_criterion>
+        </arm_dropping_criteria>
       </property>
-      <property name="is_adaptive">0</property>
-      <property name="alloc_info_type">0</property>
+      <property name="is_adaptive">1</property>
+      <property name="alloc_info_type">1</property>
       <property name="interim_stopping_criteria">
         <interims_criteria>
           <interim_criteria>
@@ -160,7 +173,12 @@
               <min_info_reqd>0</min_info_reqd>
             </graduation_criteria>
             <success_criteria>
-              <is_enabled>False</is_enabled>
+              <is_enabled>True</is_enabled>
+              <stopping_criterion>
+                <qoi_id>be799225-1f4a-4b34-95ef-a0eb949ce04e</qoi_id>
+                <condition>3</condition>
+                <threshold>0.99</threshold>
+              </stopping_criterion>
               <is_and_condition>True</is_and_condition>
               <min_info_reqd>0</min_info_reqd>
             </success_criteria>
@@ -705,8 +723,8 @@
           </item>
         </items>
       </property>
-      <property name="arm_drop">2</property>
-      <property name="alloc_update_type">0</property>
+      <property name="arm_drop">1</property>
+      <property name="alloc_update_type">1</property>
       <property name="min_alloc_prob">0</property>
       <property name="init_alloc_save">
         <items>
@@ -770,23 +788,31 @@
       <property name="cohort_updates_start">1</property>
       <property name="update_subjects">
         <items>
-          <item>1</item>
+          <item>500</item>
+          <item>700</item>
+          <item>900</item>
+          <item>1100</item>
+          <item>1300</item>
         </items>
       </property>
       <property name="interims_milestones_visits">
         <items>
           <item>1</item>
+          <item>1</item>
+          <item>1</item>
+          <item>1</item>
+          <item>1</item>
         </items>
       </property>
       <property name="continue_follow_success">1</property>
-      <property name="continue_follow_futility">0</property>
-      <property name="continue_follow_arm_drop">0</property>
+      <property name="continue_follow_futility">1</property>
+      <property name="continue_follow_arm_drop">1</property>
       <property name="stop_ia">0</property>
-      <property name="arm_drop_limit_save">1</property>
-      <property name="dropped_arm_alloc">0</property>
+      <property name="arm_drop_limit_save">4</property>
+      <property name="dropped_arm_alloc">1</property>
       <property name="prune_protect_low">1</property>
-      <property name="prune_protect_high">0</property>
-      <property name="prune_priority">0</property>
+      <property name="prune_protect_high">1</property>
+      <property name="prune_priority">1</property>
       <property name="arm_drop_blocking">
         <items>
           <item>2</item>
@@ -857,7 +883,7 @@
           <n>1</n>
         </gamma>
       </property>
-      <property name="has_variants">1</property>
+      <property name="has_variants">0</property>
       <property name="num_variants">4</property>
       <property name="variant_names">
         <items>
@@ -1141,7 +1167,7 @@
           <item>0</item>
           <item>0</item>
           <item>0</item>
-          <item>0</item>
+          <item>1</item>
         </items>
       </property>
       <property name="external_vsr_mean">0</property>
@@ -1279,7 +1305,7 @@
     </parameterSet>
   </parameterSets>
   <simulation-settings>
-    <property name="num_sims">100</property>
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1292,8 +1318,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_equal_Var1">
-    <property name="num_sims">100</property>
+  <setup-simulation-settings name="Acc 1_Drop1_equal">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1306,8 +1332,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_equal_Var2">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_linear">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1320,8 +1346,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_equal_Var3">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_plateau">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1334,8 +1360,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_equal_Var4">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_threshold">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1348,8 +1374,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_linear_Var1">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_Ushaped">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1362,8 +1388,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_linear_Var2">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_reverse_lin">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
@@ -1376,302 +1402,8 @@
     <property name="mcmc_per_imputation">1</property>
     <property name="is_local">1</property>
   </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_linear_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_linear_Var4">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_plateau_Var1">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_plateau_Var2">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_plateau_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_plateau_Var4">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_threshold_Var1">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_threshold_Var2">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_threshold_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_threshold_Var4">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_Ushaped_Var1">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_Ushaped_Var2">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_Ushaped_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_Ushaped_Var4">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_reverse_lin_Var1">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_reverse_lin_Var2">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_reverse_lin_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_reverse_lin_Var4">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_peak_Var1">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_peak_Var2">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_peak_Var3">
-    <property name="num_sims">1000</property>
-    <property name="burn">1000</property>
-    <property name="length">2500</property>
-    <property name="rv_seed_1">91552002</property>
-    <property name="rv_seed_2">1</property>
-    <property name="num_weeks_out">100</property>
-    <property name="num_freq_weeks_out">1</property>
-    <property name="num_subj_out">1</property>
-    <property name="num_mcmc_files">0</property>
-    <property name="mcmc_thin">1</property>
-    <property name="mcmc_per_imputation">1</property>
-    <property name="is_local">1</property>
-  </setup-simulation-settings>
-  <setup-simulation-settings name="Acc 1_Drop1_peak_Var4">
-    <property name="num_sims">1000</property>
+  <setup-simulation-settings name="Acc 1_Drop1_peak">
+    <property name="num_sims">500</property>
     <property name="burn">1000</property>
     <property name="length">2500</property>
     <property name="rv_seed_1">91552002</property>
